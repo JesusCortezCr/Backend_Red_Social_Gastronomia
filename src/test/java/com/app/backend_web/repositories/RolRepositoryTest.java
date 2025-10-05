@@ -1,22 +1,20 @@
 package com.app.backend_web.repositories;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import com.app.backend_web.entities.Rol;
+import com.app.backend_web.entities.Seguidor;
+
 import static org.junit.jupiter.api.Assertions.*;
+// O específicamente:
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import com.app.backend_web.entities.Categoria;
-import com.app.backend_web.entities.Seguidor;
 
 @DataJpaTest
 @EnableJpaRepositories(
@@ -27,20 +25,19 @@ import com.app.backend_web.entities.Seguidor;
     }
 )
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-public class CategoriaRepositoryTest {
+public class RolRepositoryTest {
 
     @Autowired
-    private CategoriaRepository categoriaRepository;
+    private RolRepository rolRepository;
 
     @Test
-    void cuandoGuardaCategoria_luegoCategoriaPersistida() {
-        Categoria categoria = new Categoria();
-        categoria.setNombre("Desayuno");
-        
-        Categoria guardada = categoriaRepository.save(categoria);
-        
-        assertNotNull(guardada, "La categoría guardada no debería ser null");
-        assertNotNull(guardada.getId(), "La categoría debería tener un ID generado");
-        assertEquals("Desayuno", guardada.getNombre(), "El nombre debería ser 'Desayuno'");
+    void verificarRegistroRol(){
+        Rol rol=new Rol();
+        rol.setNombre("ROLE_ADMINISTRADOR");
+
+        Rol rolRecibido=rolRepository.save(rol);
+        assertEquals(rol, rolRecibido);
+
     }
+
 }

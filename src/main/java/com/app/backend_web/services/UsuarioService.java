@@ -1,23 +1,18 @@
 package com.app.backend_web.services;
 
-import java.util.List;
+import org.springframework.stereotype.Service;
 
+import com.app.backend_web.repositories.UsuarioRepository;
 
+import lombok.RequiredArgsConstructor;
 
-import com.app.backend_web.entities.Usuario;
+@Service
+@RequiredArgsConstructor
+public class UsuarioService {
 
+    private final UsuarioRepository usuarioRepository;
 
-public interface UsuarioService {
+    //crear moderador,cliente,administrador
 
-    List<Usuario> listadoTodosUsuarios();
     
-    Usuario obtenerUsuarioPorId(Long id);
-
-    Usuario guardarUsuario(Usuario usuario, Long credencialesId, Long rolId);
-
-    void eliminarUsuario(Long id);
-
-    Usuario actualizarUsuario(Long id, Usuario usuario, Long credencialesId, Long rolId);
-
-
 }

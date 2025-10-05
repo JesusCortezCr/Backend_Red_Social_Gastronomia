@@ -2,35 +2,37 @@ package com.app.backend_web.services;
 
 import java.util.List;
 import java.util.Optional;
+
 import org.springframework.stereotype.Service;
+
 import com.app.backend_web.entities.Categoria;
 import com.app.backend_web.repositories.CategoriaRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class CategoriaService {
-    
+
     private final CategoriaRepository categoriaRepository;
 
-    public List<Categoria> listadoTodasCategorias() {
+    public List<Categoria> listadoCategorias() {
         return categoriaRepository.findAll();
     }
 
-    public Optional<Categoria> obtenerCategoriaPorId(Long id) {
-        return categoriaRepository.findById(id);
+    public Optional<Categoria> buscarCategoriaPorId(Long id) {
+
+        Optional<Categoria> categoriaCapturada = categoriaRepository.findById(id);
+        if (categoriaCapturada.isPresent()) {
+
+            return categoriaCapturada;
+        }
+        return categoriaCapturada.empty();
     }
 
-    public Categoria guardarCategoria(Categoria categoria) {
+    
+    public Categoria crearCategoria(Categoria categoria) {
         return categoriaRepository.save(categoria);
-    }
-
-    public Optional<Categoria> actualizarCategoria(Long id, Categoria categoria) {
-        return categoriaRepository.findById(id).map(pub -> {
-            pub.setNombre(categoria.getNombre());
-            
-            return categoriaRepository.save(pub);
-        });
     }
 
     public void eliminarCategoria(Long id) {

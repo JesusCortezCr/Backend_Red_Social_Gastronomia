@@ -28,7 +28,7 @@ public class RolController {
         if(rolService.buscarRolPorId(id).isPresent()){
             return ResponseEntity.ok().body(rolService.buscarRolPorId(id).get());
         }
-        return null;
+        return ResponseEntity.notFound().build();
     }
     
     

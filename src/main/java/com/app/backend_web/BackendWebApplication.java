@@ -24,6 +24,7 @@ public class BackendWebApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
+		
 		Rol rolAdministrador = new Rol();
 		rolAdministrador.setNombre("ROLE_ADMINISTRADOR");
 		rolRepository.save(rolAdministrador);

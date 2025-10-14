@@ -18,4 +18,8 @@ public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
 
     @Query("select u from Usuario u where TYPE(u)= Cliente and u.estado=true")
     List<Cliente> findAllClientesActivos();
+
+
+
+    
 }

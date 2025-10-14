@@ -6,7 +6,7 @@ import com.app.backend_web.entities.Rol;
 import com.app.backend_web.repositories.RolRepository;
 
 
-import jakarta.websocket.server.ServerEndpoint;
+
 import lombok.RequiredArgsConstructor;
 
 @Service

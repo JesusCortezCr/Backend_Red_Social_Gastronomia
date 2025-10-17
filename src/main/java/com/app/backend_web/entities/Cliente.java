@@ -11,6 +11,7 @@ import jakarta.persistence.PostLoad;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,21 +25,26 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties({"seguidores", "siguiendo"})
-public class Cliente  extends Usuario{
+public class Cliente extends Usuario {
 
-    //mis seguidores
+    // Lista de seguidores del cliente
     @OneToMany(mappedBy = "seguido")
     @JsonIgnore
     private List<Seguidor> seguidores;
 
+    // Lista de usuarios a los que sigue
     @OneToMany(mappedBy = "seguidor")
     @JsonIgnore
     private List<Seguidor> siguiendo;
 
+    // Cantidad de seguidores (solo lectura)
     @Transient
+    @Min(value = 0, message = "La cantidad de seguidores no puede ser negativa")
     private Integer cantidadSeguidores;
 
+    // Cantidad de seguidos (solo lectura)
     @Transient
+    @Min(value = 0, message = "La cantidad de seguidos no puede ser negativa")
     private Integer cantidadSiguiendo;
 
     @PostLoad

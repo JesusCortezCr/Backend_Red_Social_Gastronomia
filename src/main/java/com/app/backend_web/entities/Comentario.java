@@ -7,17 +7,11 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.PostLoad;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,15 +29,23 @@ public class Comentario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "El contenido del comentario no puede estar vacío")
+    @Size(min = 2, max = 500, message = "El comentario debe tener entre 2 y 500 caracteres")
     @Column(nullable = false)
     private String contenido;
 
-    private boolean estadoComentario=true;
-    private Integer cantidadReportes=0;
-    private LocalDateTime fechaCreacion=LocalDateTime.now();
+    @NotNull(message = "El estado del comentario no puede ser nulo")
+    private boolean estadoComentario = true;
+
+    @NotNull(message = "La cantidad de reportes no puede ser nula")
+    @Min(value = 0, message = "La cantidad de reportes no puede ser negativa")
+    private Integer cantidadReportes = 0;
+
+    @NotNull(message = "La fecha de creación no puede ser nula")
+    private LocalDateTime fechaCreacion = LocalDateTime.now();
 
     @ManyToOne
-    @JoinColumn(name = "publicacion_id")
+    @JoinColumn(name = "publicacion_id", nullable = false)
     @JsonIgnore
     private Publicacion publicacion;
 
@@ -52,14 +54,15 @@ public class Comentario {
     private Comentario comentarioPadre;
 
     @OneToMany(mappedBy = "comentarioPadre")
-    @JsonIgnoreProperties("comentarioPadre") 
-    private List<Comentario> respuestas=new ArrayList<>();
+    @JsonIgnoreProperties("comentarioPadre")
+    private List<Comentario> respuestas = new ArrayList<>();
 
     @Transient
+    @Min(value = 0, message = "La cantidad de respuestas no puede ser negativa")
     private Integer cantidadRespuestas;
 
     @ManyToOne
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "usuario_id", nullable = false)
     @JsonIgnoreProperties({"publicaciones", "comentarios", "password", "seguidores", "siguiendo"})
     private Usuario usuario;
 

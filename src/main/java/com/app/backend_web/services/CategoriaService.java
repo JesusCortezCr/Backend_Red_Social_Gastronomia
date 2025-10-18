@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.app.backend_web.entities.Categoria;
 import com.app.backend_web.repositories.CategoriaRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -16,26 +17,26 @@ public class CategoriaService {
 
     private final CategoriaRepository categoriaRepository;
 
+    @Transactional
     public List<Categoria> listadoCategorias() {
         return categoriaRepository.findAll();
     }
 
+    @Transactional
     public Optional<Categoria> buscarCategoriaPorId(Long id) {
-
-        Optional<Categoria> categoriaCapturada = categoriaRepository.findById(id);
-        if (categoriaCapturada.isPresent()) {
-
-            return categoriaCapturada;
-        }
-        return categoriaCapturada.empty();
+        return categoriaRepository.findById(id);
     }
-
     
+    // Operación de escritura
+    @Transactional
     public Categoria crearCategoria(Categoria categoria) {
         return categoriaRepository.save(categoria);
     }
 
+    // Operación de escritura
+    @Transactional
     public void eliminarCategoria(Long id) {
         categoriaRepository.deleteById(id);
     }
+
 }

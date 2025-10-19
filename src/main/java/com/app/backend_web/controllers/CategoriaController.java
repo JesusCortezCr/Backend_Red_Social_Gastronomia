@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +38,17 @@ public class CategoriaController {
 
     @PostMapping
     public ResponseEntity<?> crearCategoria(@RequestBody Categoria categoria) {
-        return ResponseEntity.status(201).body(categoria);
+        Categoria nuevaCategoria = categoriaService.crearCategoria(categoria);
+        return ResponseEntity.status(201).body(nuevaCategoria);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> actualizarCategoria(@PathVariable Long id, @RequestBody Categoria categoriaDetails) {
+        if (categoriaService.buscarCategoriaPorId(id).isPresent()) {
+            Categoria categoriaActualizada = categoriaService.actualizarCategoria(id, categoriaDetails);
+            return ResponseEntity.ok(categoriaActualizada);
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @DeleteMapping("/{id}")

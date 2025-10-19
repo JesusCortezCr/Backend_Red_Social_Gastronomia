@@ -11,11 +11,17 @@ import com.app.backend_web.entities.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
 
-
+    List<Usuario> findByRolNombre(String nombreRol);
+    
     Optional<Usuario> findByCorreo(String correo);
     boolean existsByCorreo(String correo);
     List<Usuario> findByEstadoTrue();
 
     @Query("select u from Usuario u where TYPE(u)= Cliente and u.estado=true")
     List<Cliente> findAllClientesActivos();
+
+
+    
+
+    
 }

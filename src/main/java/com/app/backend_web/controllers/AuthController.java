@@ -34,14 +34,23 @@ public class AuthController {
             return ResponseEntity.badRequest().body("El correo ya esta en uso .");
         }
 
-        Rol rolUsuario = rolRepository.findByNombre("ROLE_USUARIO")
-                .orElseThrow(() -> new RuntimeException("Rol ROLE_USUARIO no encontrado"));
+        //ASIGNACION DE ROL POR DEFECTO
+        //Rol rolUsuario = rolRepository.findByNombre("ROLE_USUARIO")
+        //        .orElseThrow(() -> new RuntimeException("Rol ROLE_USUARIO no //encontrado"));
+
+
+        //nuevoUsuario.setPassword(passwordEncoder.encode(nuevoUsuario.getPassword()));
+        //nuevoUsuario.setRol(rolUsuario);
+        //usuarioRepository.save(nuevoUsuario);
+
+        //PLAN PARA ASIGNAR ROLES DIFERENTES (PRUEBA)
+        Rol rolUsuario = rolRepository.findById(nuevoUsuario.getRol().getId())
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
 
         nuevoUsuario.setPassword(passwordEncoder.encode(nuevoUsuario.getPassword()));
         nuevoUsuario.setRol(rolUsuario);
-        usuarioRepository.save(nuevoUsuario);
-
-        return ResponseEntity.ok("Usuario registrado correctamente");
+        usuarioRepository.save(nuevoUsuario);        
+        return ResponseEntity.ok("Usuario registrado correctamente con rol: "+ rolUsuario.getNombre());
 
     }
 

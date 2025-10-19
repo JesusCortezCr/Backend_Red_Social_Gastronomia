@@ -7,11 +7,11 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.test.annotation.Rollback;
+
 
 import com.app.backend_web.entities.Rol;
 import com.app.backend_web.entities.Seguidor;
-import com.app.backend_web.entities.Usuario;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 // O específicamente:

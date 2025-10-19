@@ -11,7 +11,8 @@ import com.app.backend_web.entities.Usuario;
 
 public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
 
-
+    List<Usuario> findByRolNombre(String nombreRol);
+    
     Optional<Usuario> findByCorreo(String correo);
     boolean existsByCorreo(String correo);
     List<Usuario> findByEstadoTrue();
@@ -20,6 +21,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
     List<Cliente> findAllClientesActivos();
 
 
+    
 
     
 }

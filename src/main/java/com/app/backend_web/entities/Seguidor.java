@@ -2,14 +2,8 @@ package com.app.backend_web.entities;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,9 +13,9 @@ import lombok.Setter;
 @Table(
     name = "seguidores",
     uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"seguidor_id","seguido_id"})
+        @UniqueConstraint(columnNames = {"seguidor_id", "seguido_id"})
     }
-    )
+)
 @Getter
 @Setter
 @NoArgsConstructor
@@ -32,14 +26,16 @@ public class Seguidor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "El seguidor no puede ser nulo")
     @ManyToOne
-    @JoinColumn(name = "seguidor_id")
+    @JoinColumn(name = "seguidor_id", nullable = false)
     private Cliente seguidor;
 
+    @NotNull(message = "El seguido no puede ser nulo")
     @ManyToOne
-    @JoinColumn(name = "seguido_id")
+    @JoinColumn(name = "seguido_id", nullable = false)
     private Cliente seguido;
 
+    @NotNull(message = "La fecha de seguimiento no puede ser nula")
     private LocalDateTime fechaSeguimiento = LocalDateTime.now();
-
 }

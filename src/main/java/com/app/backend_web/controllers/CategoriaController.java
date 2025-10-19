@@ -40,6 +40,8 @@ public class CategoriaController {
         return ResponseEntity.status(201).body(categoria);
     }
 
+    //put categoria
+
     @DeleteMapping("/{id}")
     ResponseEntity<?> eliminarCategoriaPorId(@PathVariable Long id) {
         categoriaService.eliminarCategoria(id);

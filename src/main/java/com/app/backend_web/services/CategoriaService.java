@@ -33,6 +33,14 @@ public class CategoriaService {
         return categoriaRepository.save(categoria);
     }
 
+    @Transactional
+    public Categoria actualizarCategoria(Long id, Categoria categoriaDetails) {
+        Categoria categoriaExistente = categoriaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoría no encontrada con id: " + id));
+        categoriaExistente.setNombre(categoriaDetails.getNombre());
+        return categoriaRepository.save(categoriaExistente);
+    }
+
     // Operación de escritura
     @Transactional
     public void eliminarCategoria(Long id) {

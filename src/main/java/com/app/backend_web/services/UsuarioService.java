@@ -1,5 +1,7 @@
 package com.app.backend_web.services;
 
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -45,5 +47,10 @@ public class UsuarioService {
         usuario.setRol(nuevoRol);
 
         return usuarioRepository.save(usuario);
+    }
+
+    public List<Usuario> listarUsuarios() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'listarUsuarios'");
     }
 }

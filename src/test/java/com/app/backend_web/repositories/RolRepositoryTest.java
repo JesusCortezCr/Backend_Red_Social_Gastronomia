@@ -8,8 +8,10 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+
 import com.app.backend_web.entities.Rol;
 import com.app.backend_web.entities.Seguidor;
+
 
 import static org.junit.jupiter.api.Assertions.*;
 // O específicamente:
@@ -24,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes = NotificacionRepository.class)
     }
 )
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+
 public class RolRepositoryTest {
 
     @Autowired

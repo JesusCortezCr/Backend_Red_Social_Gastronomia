@@ -2,15 +2,10 @@ package com.app.backend_web.entities;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,17 +23,28 @@ public class Notificacion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotNull(message = "El usuario destino no puede ser nulo")
     @ManyToOne
-    @JoinColumn(name = "usuario_destino_id")
+    @JoinColumn(name = "usuario_destino_id", nullable = false)
     private Usuario usuarioDestino;
+
+    @NotBlank(message = "El título de la notificación es obligatorio")
+    @Size(max = 100, message = "El título no puede superar los 100 caracteres")
     private String titulo;
+
+    @NotBlank(message = "El mensaje de la notificación es obligatorio")
+    @Size(max = 500, message = "El mensaje no puede superar los 500 caracteres")
     private String mensaje;
 
+    @NotNull(message = "El tipo de notificación no puede ser nulo")
     @Enumerated(EnumType.STRING)
-    private TipoNotificacion  tipoNotificacion;
-    private boolean leida = false;
-    private LocalDateTime fechaCreacion = LocalDateTime.now();
+    private TipoNotificacion tipoNotificacion;
 
+    @NotNull(message = "El estado de lectura no puede ser nulo")
+    private boolean leida = false;
+
+    @NotNull(message = "La fecha de creación no puede ser nula")
+    private LocalDateTime fechaCreacion = LocalDateTime.now();
 }
 
 enum TipoNotificacion {

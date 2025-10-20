@@ -15,7 +15,6 @@ public class ComentarioController {
 
     private final ComentarioService comentarioService;
 
-    // ✅ Crear comentario asociado a una publicación
     @PostMapping("/publicacion/{publicacionId}/usuario/{usuarioId}")
     public ResponseEntity<?> crearComentario(
             @PathVariable Long publicacionId,

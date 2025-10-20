@@ -47,10 +47,10 @@ public class CategoriaController {
     }
 
     // 🔹 Eliminar categoría
-   @DeleteMapping("/{id}")
-public ResponseEntity<?> eliminarCategoria(@PathVariable Long id) {
-    categoriaService.eliminarCategoria(id);
-    return ResponseEntity.noContent().build();
-}
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarCategoria(@PathVariable Long id) {
+        categoriaService.eliminarCategoria(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }

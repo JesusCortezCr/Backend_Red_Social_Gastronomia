@@ -1,5 +1,8 @@
 package com.app.backend_web.services;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,4 +35,33 @@ public class ComentarioService {
 
         return comentarioRepository.save(comentario);
     }
+
+    @Transactional
+    public List<Comentario> listadoComentarios() {
+        return comentarioRepository.findAll();
+    }
+
+    @Transactional
+    public Optional<Comentario> buscarComentarioPorId(Long id) {
+        return comentarioRepository.findById(id);
+    }
+
+    @Transactional
+    public Comentario crearComentario(Comentario comentario) {
+        return comentarioRepository.save(comentario);
+    }
+
+    @Transactional
+    public Comentario actualizarComentario(Long id, Comentario comentarioDetails) {
+        Comentario comentarioExistente = comentarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Comentario no encontrado con id: " + id));
+        comentarioExistente.setContenido(comentarioDetails.getContenido());
+        return comentarioRepository.save(comentarioExistente);
+    }
+
+    @Transactional
+    public void eliminarComentario(Long id) {
+        comentarioRepository.deleteById(id);
+    }
+
 }

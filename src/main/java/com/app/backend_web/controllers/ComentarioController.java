@@ -23,4 +23,38 @@ public class ComentarioController {
         return ResponseEntity.status(201)
                 .body(comentarioService.crearComentario(publicacionId, usuarioId, comentario));
     }
+
+    @GetMapping
+    public ResponseEntity<?> traerComentarios() {
+        return ResponseEntity.ok().body(comentarioService.listadoComentarios());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> traerComentarioPorId(@PathVariable Long id) {
+        if (comentarioService.buscarComentarioPorId(id).isPresent()) {
+            return ResponseEntity.ok().body(comentarioService.buscarComentarioPorId(id).get());
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping
+    public ResponseEntity<?> crearComentario(@RequestBody Comentario comentario) {
+        Comentario nuevoComentario = comentarioService.crearComentario(comentario);
+        return ResponseEntity.status(201).body(nuevoComentario);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<?> modificarComentario(@PathVariable Long id, @RequestBody Comentario comentario) {
+        if (comentarioService.buscarComentarioPorId(id).isPresent()) {
+            Comentario comentarioActualizado = comentarioService.actualizarComentario(id, comentario);
+            return ResponseEntity.ok(comentarioActualizado);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<?> eliminarComentarioPorId(@PathVariable Long id) {
+        comentarioService.eliminarComentario(id);
+        return ResponseEntity.status(204).build();
+    }
 }

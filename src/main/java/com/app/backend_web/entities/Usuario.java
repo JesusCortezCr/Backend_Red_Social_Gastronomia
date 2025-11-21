@@ -35,16 +35,17 @@ public class Usuario {
 
     @NotBlank(message = "El correo es obligatorio")
     @Email(message = "Debe ser un correo válido")
-    @Column(nullable = false, unique = true, length = 100)
+    @Column(nullable = false, unique = true)
+    @Size(min = 10 , max=100)
     private String correo;
 
     @NotBlank(message = "La contraseña es obligatoria")
-    @Size(min = 6, max = 100, message = "La contraseña debe tener entre 6 y 100 caracteres")
+    @Size(min = 5, max = 100, message = "La contraseña debe tener entre 6 y 100 caracteres")
     @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
-    private boolean estado = true;
+    private Boolean estado = true;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "rol_id", nullable = false)
@@ -59,6 +60,6 @@ public class Usuario {
     private String apellido;
 
     @Size(max = 500, message = "La biografía no puede superar los 500 caracteres")
-    private String biografia;
+    private String biografia="Por el momento no tengo biografia";
 
 }

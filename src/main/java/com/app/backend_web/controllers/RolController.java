@@ -17,13 +17,11 @@ public class RolController {
 
     private final RolService rolService;
 
-    // 🔹 Listar todos los roles
     @GetMapping
     public ResponseEntity<?> listarRoles() {
         return ResponseEntity.ok(rolService.listadoRoles());
     }
 
-    // 🔹 Buscar rol por ID
     @GetMapping("/{id}")
     public ResponseEntity<?> buscarRolPorId(@PathVariable Long id) {
         return rolService.buscarRolPorId(id)
@@ -31,14 +29,12 @@ public class RolController {
                 .orElseThrow(() -> new ResourceNotFoundException("Rol con ID " + id + " no encontrado"));
     }
 
-    // 🔹 Crear un nuevo rol
     @PostMapping
     public ResponseEntity<?> crearRol(@Valid @RequestBody Rol rol) {
         Rol nuevo = rolService.crearRol(rol);
         return ResponseEntity.ok(nuevo);
     }
 
-    // 🔹 Actualizar un rol existente
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarRol(
             @PathVariable Long id,
@@ -48,7 +44,6 @@ public class RolController {
         return ResponseEntity.ok(actualizado);
     }
 
-    // 🔹 Eliminar un rol
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarRol(@PathVariable Long id) {
         rolService.eliminarRol(id);

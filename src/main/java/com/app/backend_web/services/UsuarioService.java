@@ -49,7 +49,7 @@ public class UsuarioService {
             usuarionuevo.setCorreo(usuario.getCorreo());
             usuarionuevo.setPassword(usuario.getPassword());
             usuarionuevo.setRol(usuario.getRol());
-            usuarionuevo.setEstado(usuario.isEstado());
+            usuarionuevo.setEstado(usuario.getEstado());
             return usuarioRepository.save(usuarionuevo);
         }
         return null;

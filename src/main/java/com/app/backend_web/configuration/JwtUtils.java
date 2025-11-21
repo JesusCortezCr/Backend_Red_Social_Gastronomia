@@ -14,7 +14,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtUtils {
 
     private static final String SECRET_KEY = "clave-super-secreta-para-jwt-1234567890"; // cámbiala por algo más largo
-    private static final long EXPIRATION_TIME = 3600000; // 1 día en milisegundos
+    private static final long EXPIRATION_TIME = 86400000; //24 horas reales
 
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());

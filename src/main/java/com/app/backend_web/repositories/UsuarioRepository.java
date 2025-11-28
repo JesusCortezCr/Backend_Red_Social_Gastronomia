@@ -21,6 +21,17 @@ public interface UsuarioRepository extends JpaRepository<Usuario,Long> {
     List<Cliente> findAllClientesActivos();
 
 
+    //Traer usuarios moderadores
+
+    default List<Usuario> findAllUsuariosModeradores(){
+        return findByRolNombre("ROLE_MODERADOR");
+    }
+
+    //traer usuarios administradores
+
+    default List<Usuario> findAllUsuariosAdministradores(){
+        return findByRolNombre("ROLE_ADMINISTRADOR");
+    }
     
 
     

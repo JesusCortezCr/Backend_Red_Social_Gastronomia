@@ -35,31 +35,24 @@ public class Publicacion {
     private String titulo;
 
     @NotBlank(message = "La descripción es obligatoria")
-    @Size(min = 5, max = 255, message = "La descripción debe tener entre 5 y 255 caracteres")
+    @Size(min = 5, max = 450, message = "La descripción debe tener entre 5 y 450 caracteres")
     private String descripcion;
 
-    @NotBlank(message = "El contenido es obligatorio")
-    @Size(min = 10, message = "El contenido debe tener al menos 10 caracteres")
-    @Column(columnDefinition = "TEXT")
-    private String contenido;
-
-    @Size(max = 255, message = "La URL de la imagen no puede superar los 255 caracteres")
-    private String imagenUrl;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "image_id",referencedColumnName = "id")
+    private Image image;
 
     @NotNull(message = "El estado no puede ser nulo")
     private boolean estado = true;
 
     @Min(value = 0, message = "La calificación mínima es 0")
     @Max(value = 5, message = "La calificación máxima es 5")
-    private Integer calificacion;
+    private Integer calificacion=0;
 
     @NotNull(message = "La fecha de creación no puede ser nula")
     private LocalDateTime fechaCreacion = LocalDateTime.now();
 
-    private LocalDateTime fechaActualizacion;
-
-    @Size(max = 255, message = "El nombre del archivo no puede superar los 255 caracteres")
-    private String archivo;
+    private LocalDateTime fechaActualizacion=LocalDateTime.now();
 
     @NotNull(message = "La publicación debe estar asociada a un usuario")
     @ManyToOne

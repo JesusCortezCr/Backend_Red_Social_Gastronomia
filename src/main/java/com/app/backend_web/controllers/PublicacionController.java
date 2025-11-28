@@ -2,10 +2,13 @@ package com.app.backend_web.controllers;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.apache.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/publicaciones")
 public class PublicacionController {
 
+    private static final Logger logger = LoggerFactory.getLogger(PublicacionController.class);
     private final PublicacionService publicacionService;
 
 
@@ -64,6 +68,25 @@ public class PublicacionController {
             return new ResponseEntity<>(updatedPublicacion, org.springframework.http.HttpStatus.OK);
         }else {
             return new ResponseEntity<>(org.springframework.http.HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/mis-publicaciones")
+    public ResponseEntity<List<Publicacion>> listarMisPublicaciones(Principal principal){
+        String email = principal.getName();
+        logger.info("⚙️ [Controller] Buscando publicaciones para el email: {}", email);
+        List<Publicacion> misPublicacioens=publicacionService.listarPublicacionesPorUsuario(email);
+        return ResponseEntity.ok(misPublicacioens);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> eliminarPublicacion(@PathVariable Long id,Principal principal){
+        try{
+            String userEmail=principal.getName();
+            publicacionService.eliminarPublicacion(id,userEmail);
+            return ResponseEntity.ok(Map.of("message","Publicacion eliminada"));
+        }catch(Exception e){
+            return ResponseEntity.badRequest().body(Map.of("error",e.getMessage()));
         }
     }
 }

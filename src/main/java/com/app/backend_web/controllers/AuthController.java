@@ -8,6 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -71,27 +72,34 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginData) {
         try {
-        Authentication authentication = authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginData.getCorreo(), 
-                loginData.getPassword()
-            )
-        );
+            Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    loginData.getCorreo(), 
+                    loginData.getPassword()
+                )
+            );
+            
+            // 🚨 SOLUCIÓN: Obtenemos el UserDetails del objeto Authentication
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-        String token = jwtUtils.generarToken(loginData.getCorreo());
-        Usuario usuario = usuarioRepository.findByCorreo(loginData.getCorreo())
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            // Usamos el UserDetails para generar un token único y con claims
+            String token = jwtUtils.generarToken(userDetails); 
 
-        return ResponseEntity.ok(Map.of(
-                "token", token,
-                "correo", usuario.getCorreo(),
-                "rol", usuario.getRol().getNombre()));
-                
-    } catch (BadCredentialsException e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en el servidor");
-    }
+            // Obtenemos el objeto Usuario para los datos de la respuesta
+            Usuario usuario = usuarioRepository.findByCorreo(loginData.getCorreo())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            return ResponseEntity.ok(Map.of(
+                    "token", token,
+                    "correo", usuario.getCorreo(),
+                    "rol", usuario.getRol().getNombre()));
+                    
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
+        } catch (Exception e) {
+            // Se recomienda loguear la excepción completa aquí: logger.error("Error en login", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en el servidor: " + e.getMessage());
+        }
     }
 
 

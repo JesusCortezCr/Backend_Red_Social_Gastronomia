@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.app.backend_web.configuration.JwtUtils;
+import com.app.backend_web.dto.AuthResponse;
 import com.app.backend_web.dto.LoginRequest;
 import com.app.backend_web.dto.RegistroRequestDTO;
 import com.app.backend_web.dto.UsuarioMapper;
@@ -48,17 +49,17 @@ public class AuthController {
         if (usuarioRepository.findByCorreo(nuevoUsuario.getCorreo()).isPresent()) {
             return ResponseEntity.badRequest().body("El correo ya esta en uso .");
         }
-        Usuario usuario=new Usuario();
+        Usuario usuario = new Usuario();
         usuario.setNombre(nuevoUsuario.getNombre());
         usuario.setApellido(nuevoUsuario.getApellido());
         usuario.setCorreo(nuevoUsuario.getCorreo());
         usuario.setPassword(passwordEncoder.encode(nuevoUsuario.getPassword()));
 
-        Rol rolUsuario=rolRepository.findByNombre("ROLE_USUARIO")
-        .orElseThrow(()-> new RuntimeException("Rol no encontrado"));
+        Rol rolUsuario = rolRepository.findByNombre("ROLE_USUARIO")
+                .orElseThrow(() -> new RuntimeException("Rol no encontrado"));
         usuario.setRol(rolUsuario);
         usuarioRepository.save(usuario);
-        UsuarioResponseDTO usuarioResponseDTO=new UsuarioResponseDTO();
+        UsuarioResponseDTO usuarioResponseDTO = new UsuarioResponseDTO();
         usuarioResponseDTO.setId(usuario.getId());
         usuarioResponseDTO.setCorreo(usuario.getCorreo());
         usuarioResponseDTO.setNombre(usuario.getNombre());
@@ -73,67 +74,69 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest loginData) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginData.getCorreo(), 
-                    loginData.getPassword()
-                )
-            );
-            
+                    new UsernamePasswordAuthenticationToken(
+                            loginData.getCorreo(),
+                            loginData.getPassword()));
+
             // 🚨 SOLUCIÓN: Obtenemos el UserDetails del objeto Authentication
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
             // Usamos el UserDetails para generar un token único y con claims
-            String token = jwtUtils.generarToken(userDetails); 
+            String token = jwtUtils.generarToken(userDetails);
 
             // Obtenemos el objeto Usuario para los datos de la respuesta
             Usuario usuario = usuarioRepository.findByCorreo(loginData.getCorreo())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-            return ResponseEntity.ok(Map.of(
-                    "token", token,
-                    "correo", usuario.getCorreo(),
-                    "rol", usuario.getRol().getNombre()));
-                    
+            AuthResponse authResponse = new AuthResponse();
+            authResponse.setToken(token);
+            authResponse.setCorreo(usuario.getCorreo());
+            authResponse.setRol(usuario.getRol().getNombre());
+            authResponse.setId(usuario.getId());
+
+            return ResponseEntity.ok(authResponse);
+
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");
         } catch (Exception e) {
-            // Se recomienda loguear la excepción completa aquí: logger.error("Error en login", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error en el servidor: " + e.getMessage());
+            // Se recomienda loguear la excepción completa aquí: logger.error("Error en
+            // login", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error en el servidor: " + e.getMessage());
         }
     }
 
-
-    //obtener usuario actual
+    // obtener usuario actual
     @GetMapping("/logeado")
-    public ResponseEntity<?> obtenerUsuarioLogeado(Authentication authenticado , UsuarioMapper usuarioMapper){
-        if(authenticado.getPrincipal()==null){
+    public ResponseEntity<?> obtenerUsuarioLogeado(Authentication authenticado, UsuarioMapper usuarioMapper) {
+        if (authenticado.getPrincipal() == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("No autenticado");
         }
-        String correo= authenticado.getName();
-        Usuario usuario= usuarioRepository.findByCorreo(correo).orElseThrow(()-> new RuntimeException("Usuario no encontrado"));
+        String correo = authenticado.getName();
+        Usuario usuario = usuarioRepository.findByCorreo(correo)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         return ResponseEntity.ok(usuarioMapper.toDTO(usuario));
 
     }
 
-    //Cerrar sesion logout
+    // Cerrar sesion logout
     @PostMapping("/logout")
-    public ResponseEntity<?> cerrarSesion(HttpServletRequest request){
-        String token=traerTokenDelRequest(request);
-        if(token!=null && jwtUtils.validarToken(token)){
+    public ResponseEntity<?> cerrarSesion(HttpServletRequest request) {
+        String token = traerTokenDelRequest(request);
+        if (token != null && jwtUtils.validarToken(token)) {
             tokenBlacklistService.blacklistToken(token);
-            return ResponseEntity.ok().body(Map.of("message","Logout exitoso"));
+            return ResponseEntity.ok().body(Map.of("message", "Logout exitoso"));
         }
-        return ResponseEntity.badRequest().body(Map.of("error","Token invalido"));
+        return ResponseEntity.badRequest().body(Map.of("error", "Token invalido"));
     }
 
     private String traerTokenDelRequest(HttpServletRequest request) {
-        String bearerToken=request.getHeader("Authorization");
-        if(bearerToken !=null && bearerToken.startsWith("Bearer ")){
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
             return bearerToken.substring(7);
         }
         return null;
     }
-
 
 }

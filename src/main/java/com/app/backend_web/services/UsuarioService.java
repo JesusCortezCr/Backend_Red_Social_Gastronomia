@@ -3,6 +3,8 @@ package com.app.backend_web.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.Authentication; 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.app.backend_web.entities.Usuario;
@@ -15,24 +17,21 @@ import lombok.RequiredArgsConstructor;
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
+    private final PasswordEncoder passwordEncoder;
 
     // crear moderador,cliente,administrador
 
-    public List<Usuario> listarUsuarios() {
+    public java.util.List<Usuario> listarUsuarios() {
         return usuarioRepository.findAll();
     }
 
-    public List<Usuario> listarUsuariosPorRol(String nombreRol) {
+    public java.util.List<Usuario> listarUsuariosPorRol(String nombreRol) {
         return usuarioRepository.findByRolNombre(nombreRol);
     }
     
 
     public Optional<Usuario> buscarUsuarioPorId(Long id) {
-        Optional<Usuario> usuarioCapturado = usuarioRepository.findById(id);
-        if (usuarioCapturado.isPresent()) {
-            return usuarioCapturado;
-        }
-        return usuarioCapturado.empty();
+    return usuarioRepository.findById(id);
     }
 
     public void eliminarUsuario(Long id) {
@@ -47,7 +46,16 @@ public class UsuarioService {
             usuarionuevo.setNombre(usuario.getNombre());
             usuarionuevo.setApellido(usuario.getApellido());
             usuarionuevo.setCorreo(usuario.getCorreo());
-            usuarionuevo.setPassword(usuario.getPassword());
+
+            //Verificacion de cambio de contraseña y comparacion
+            String nuevoPassword = usuario.getPassword();
+            if(nuevoPassword != null && !nuevoPassword.isEmpty()) {
+                usuarionuevo.setPassword(passwordEncoder.encode(nuevoPassword));
+            } else {
+                usuarionuevo.setPassword(usuarionuevo.getPassword());
+            }
+
+            usuarionuevo.setBiografia(usuario.getBiografia());
             usuarionuevo.setRol(usuario.getRol());
             usuarionuevo.setEstado(usuario.getEstado());
             return usuarioRepository.save(usuarionuevo);

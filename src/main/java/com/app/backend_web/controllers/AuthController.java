@@ -79,6 +79,7 @@ public class AuthController {
                 )
             );
             
+            
             // 🚨 SOLUCIÓN: Obtenemos el UserDetails del objeto Authentication
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
@@ -92,7 +93,8 @@ public class AuthController {
             return ResponseEntity.ok(Map.of(
                     "token", token,
                     "correo", usuario.getCorreo(),
-                    "rol", usuario.getRol().getNombre()));
+                    "rol", usuario.getRol().getNombre(),
+                    "id", usuario.getId()));
                     
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Credenciales incorrectas");

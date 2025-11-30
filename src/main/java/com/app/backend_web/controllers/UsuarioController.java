@@ -7,6 +7,7 @@ import com.app.backend_web.services.UsuarioService;
 
 import lombok.RequiredArgsConstructor;
 
+import org.apache.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,34 +22,33 @@ public class UsuarioController {
 
 
     private final UsuarioService usuarioService;
-    
+
     @GetMapping()
     public ResponseEntity<?> traerUsuarios() {
         return ResponseEntity.ok().body(usuarioService.listarUsuarios());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> traerUsuarioRol(@PathVariable Long id) {
-        if(usuarioService.buscarUsuarioPorId(id).isPresent()){
-            return ResponseEntity.ok().body(usuarioService.buscarUsuarioPorId(id).get());
-        }
-        return ResponseEntity.notFound().build();
+    public ResponseEntity<Usuario> getUsuario(@PathVariable Long id) {
+        return usuarioService.buscarUsuarioPorId(id)
+            .map(usuario -> ResponseEntity.ok(usuario))
+            .orElse(ResponseEntity.status(HttpStatus.SC_NOT_FOUND).body(null));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> eliminarUsuario(@PathVariable Long id) {
-        if(usuarioService.buscarUsuarioPorId(id).isPresent()){
+        if (usuarioService.buscarUsuarioPorId(id).isPresent()) {
             usuarioService.eliminarUsuario(id);
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.ok("Usuario eliminado");
     }
-    
+
     @PutMapping("/{id}")
     public ResponseEntity<?> actualizarUsuario(@PathVariable Long id, @RequestBody Usuario usuario) {
-        
-        Usuario nuevo= usuarioService.actualizarUsuario(id,usuario);
-        if(nuevo ==null){
+
+        Usuario nuevo = usuarioService.actualizarUsuario(id, usuario);
+        if (nuevo == null) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok().body(nuevo);
@@ -56,9 +56,7 @@ public class UsuarioController {
 
     @GetMapping("/rol/{nombreRol}")
     public ResponseEntity<?> listarUsuariosPorRol(@PathVariable String nombreRol) {
-    return ResponseEntity.ok(usuarioService.listarUsuariosPorRol(nombreRol));
-}
-    
-    
-    
+        return ResponseEntity.ok(usuarioService.listarUsuariosPorRol(nombreRol));
+    }
+
 }

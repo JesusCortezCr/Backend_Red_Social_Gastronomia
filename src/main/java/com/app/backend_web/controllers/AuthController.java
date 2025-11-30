@@ -78,13 +78,13 @@ public class AuthController {
                             loginData.getCorreo(),
                             loginData.getPassword()));
 
-            // 🚨 SOLUCIÓN: Obtenemos el UserDetails del objeto Authentication
+        
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-            // Usamos el UserDetails para generar un token único y con claims
+      
             String token = jwtUtils.generarToken(userDetails);
 
-            // Obtenemos el objeto Usuario para los datos de la respuesta
+            
             Usuario usuario = usuarioRepository.findByCorreo(loginData.getCorreo())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 

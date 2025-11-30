@@ -30,9 +30,8 @@ public class Comentario {
     private Long id;
 
     @NotBlank(message = "El contenido del comentario no puede estar vacío")
-    @Size(min = 2, max = 500, message = "El comentario debe tener entre 2 y 500 caracteres")
-    @Column(nullable = false)
     private String contenido;
+
 
     @NotNull(message = "El estado del comentario no puede ser nulo")
     private boolean estadoComentario = true;
